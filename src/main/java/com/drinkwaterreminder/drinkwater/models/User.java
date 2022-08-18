@@ -2,20 +2,19 @@ package com.drinkwaterreminder.drinkwater.models;
 
 import com.drinkwaterreminder.drinkwater.enums.GenderEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
-import org.hibernate.Hibernate;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.Objects;
 import java.util.UUID;
 
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @Entity
 @Table(name = "TB_USER")
@@ -39,17 +38,4 @@ public class User implements Serializable {
   @Enumerated(EnumType.STRING)
   @Column(name = "gender")
   private GenderEnum gender;
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-    User user = (User) o;
-    return id != null && Objects.equals(id, user.id);
-  }
-
-  @Override
-  public int hashCode() {
-    return getClass().hashCode();
-  }
 }

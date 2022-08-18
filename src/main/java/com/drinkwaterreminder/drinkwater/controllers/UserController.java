@@ -2,7 +2,7 @@ package com.drinkwaterreminder.drinkwater.controllers;
 
 import com.drinkwaterreminder.drinkwater.models.User;
 import com.drinkwaterreminder.drinkwater.models.dtos.UserDto;
-import com.drinkwaterreminder.drinkwater.models.mappers.UserMapper;
+import com.drinkwaterreminder.drinkwater.models.mappers.RegisterMapper;
 import com.drinkwaterreminder.drinkwater.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,19 +17,19 @@ import javax.validation.Valid;
 import java.util.Optional;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/v1/api/users")
-@RequiredArgsConstructor
 public class UserController {
 
   final UserService userService;
-  final UserMapper userMapper;
+  final RegisterMapper registerMapper;
 
   //  CREATE /*****************************/
 
   @PostMapping
   public ResponseEntity<Object> createUser(@RequestBody @Valid UserDto userDto) {
-    User user = userService.saveUser(userMapper.convertToUser(userDto));
+    User user = userService.saveUser(registerMapper.convertToUser(userDto));
     userDto.setId(user.getId());
 
     return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
@@ -41,7 +41,7 @@ public class UserController {
   public ResponseEntity<Page<UserDto>> getAllUsers(@PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
     Page<User> userPage = userService.findAllUsers(pageable);
 
-    return ResponseEntity.status(HttpStatus.OK).body(userMapper.convertToPageUserDto(userPage));
+    return ResponseEntity.status(HttpStatus.OK).body(registerMapper.convertToPageUserDto(userPage));
   }
 
   @GetMapping("/{id}")
@@ -52,7 +52,7 @@ public class UserController {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
     }
 
-    return ResponseEntity.status(HttpStatus.FOUND).body(userMapper.convertToUserDto(userOptional.get()));
+    return ResponseEntity.status(HttpStatus.FOUND).body(registerMapper.convertToUserDto(userOptional.get()));
   }
 
   //  UPDATE /*****************************/
@@ -63,7 +63,7 @@ public class UserController {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No users found.");
     }
 
-    User userUpdated = userMapper.convertToUser(userDto);
+    User userUpdated = registerMapper.convertToUser(userDto);
     userUpdated.setId(id);
 
     return ResponseEntity.status(HttpStatus.FOUND).body(userService.update(userUpdated));

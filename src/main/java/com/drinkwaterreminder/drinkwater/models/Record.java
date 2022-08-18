@@ -1,19 +1,18 @@
 package com.drinkwaterreminder.drinkwater.models;
 
 import com.drinkwaterreminder.drinkwater.enums.WeekDayEnum;
-import lombok.*;
-import org.hibernate.Hibernate;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.UUID;
 
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @Entity
 @Table(name = "TB_RECORD")
@@ -31,17 +30,4 @@ public class Record implements Serializable {
   @Enumerated(EnumType.STRING)
   @Column(name = "week_day", nullable = false)
   private WeekDayEnum weekday;
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-    Record record = (Record) o;
-    return id != null && Objects.equals(id, record.id);
-  }
-
-  @Override
-  public int hashCode() {
-    return getClass().hashCode();
-  }
 }
