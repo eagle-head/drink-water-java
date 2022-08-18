@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class RegisterMapper {
+public class UserMapper {
   final ModelMapper mapper;
 
   public User convertToUser(UserDto dto){
