@@ -14,7 +14,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class UserDto implements Serializable {
+public class RegisterDto implements Serializable {
   @Serial
   private static final long serialVersionUID = -4993499572533026215L;
 
@@ -34,4 +34,8 @@ public class UserDto implements Serializable {
   private BigDecimal height;
   @EnumNamePattern(regexp = "MALE|FEMALE|OTHERS")
   private GenderEnum gender;
+  @Email
+  private String email;
+  @NotBlank
+  private String password;
 }

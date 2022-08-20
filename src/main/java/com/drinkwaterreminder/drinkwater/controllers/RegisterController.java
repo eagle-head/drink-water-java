@@ -1,8 +1,9 @@
 package com.drinkwaterreminder.drinkwater.controllers;
 
 import com.drinkwaterreminder.drinkwater.models.User;
-import com.drinkwaterreminder.drinkwater.models.dtos.UserDto;
+import com.drinkwaterreminder.drinkwater.models.dtos.RegisterDto;
 import com.drinkwaterreminder.drinkwater.models.mappers.UserMapper;
+import com.drinkwaterreminder.drinkwater.services.SignInService;
 import com.drinkwaterreminder.drinkwater.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,25 +21,31 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/v1/api/users")
-public class UserController {
+public class RegisterController {
 
-  final UserService userService;
-  final UserMapper userMapper;
+  private final UserService userService;
+  private final SignInService signInService;
+  private final UserMapper userMapper;
 
   //  CREATE /*****************************/
 
   @PostMapping
-  public ResponseEntity<Object> createUser(@RequestBody @Valid UserDto userDto) {
-    User user = userService.saveUser(userMapper.convertToUser(userDto));
-    userDto.setId(user.getId());
+  public ResponseEntity<Object> createUser(@RequestBody @Valid RegisterDto registerDto) {
+    if (signInService.existsByEmail(registerDto.getEmail())){
+      return ResponseEntity.status(HttpStatus.CONFLICT).body("User already register!");
+    }
 
-    return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
+    User user = userService.saveUser(userMapper.convertToUser(registerDto));
+    registerDto.setId(user.getId());
+    registerDto.setPassword("****");
+
+    return ResponseEntity.status(HttpStatus.CREATED).body(registerDto);
   }
 
   //  READ /*****************************/
 
   @GetMapping
-  public ResponseEntity<Page<UserDto>> getAllUsers(@PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+  public ResponseEntity<Page<RegisterDto>> getAllUsers(@PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
     Page<User> userPage = userService.findAllUsers(pageable);
 
     return ResponseEntity.status(HttpStatus.OK).body(userMapper.convertToPageUserDto(userPage));
@@ -58,12 +65,12 @@ public class UserController {
   //  UPDATE /*****************************/
 
   @PutMapping("/{id}")
-  public ResponseEntity<Object> updateUserById(@PathVariable(value = "id") UUID id, @RequestBody @Valid UserDto userDto) {
+  public ResponseEntity<Object> updateUserById(@PathVariable(value = "id") UUID id, @RequestBody @Valid RegisterDto registerDto) {
     if (userService.findUserById(id).isEmpty()) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No users found.");
     }
 
-    User userUpdated = userMapper.convertToUser(userDto);
+    User userUpdated = userMapper.convertToUser(registerDto);
     userUpdated.setId(id);
 
     return ResponseEntity.status(HttpStatus.FOUND).body(userService.update(userUpdated));

@@ -13,11 +13,12 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class UserService {
-  final UserRepository userRepository;
+  private final UserRepository userRepository;
 
+  @Transactional
   public User saveUser(User user) {
+    System.out.println();
     return userRepository.save(user);
   }
 
@@ -29,10 +30,12 @@ public class UserService {
     return userRepository.findAll(pageable);
   }
 
+  @Transactional
   public User update(User user) {
     return userRepository.save(user);
   }
 
+  @Transactional
   public void delete(UUID id) {
     userRepository.deleteById(id);
   }

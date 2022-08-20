@@ -2,9 +2,7 @@ package com.drinkwaterreminder.drinkwater.models;
 
 import com.drinkwaterreminder.drinkwater.enums.GenderEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serial;
@@ -13,9 +11,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 
-@Getter
-@Setter
-@RequiredArgsConstructor
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "TB_USER")
 public class User implements Serializable {
@@ -38,4 +36,7 @@ public class User implements Serializable {
   @Enumerated(EnumType.STRING)
   @Column(name = "gender")
   private GenderEnum gender;
+  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @PrimaryKeyJoinColumn
+  private SignIn signIn;
 }
